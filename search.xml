@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>执行上下文</title>
+    <url>/2020/03/25/%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87/</url>
+    <content><![CDATA[<h2 id="代码分类"><a href="#代码分类" class="headerlink" title="代码分类"></a>代码分类</h2><p>全局代码<br>函数（局部）代码</p>
+<a id="more"></a>
+<h2 id="全局执行上下文"><a href="#全局执行上下文" class="headerlink" title="全局执行上下文"></a>全局执行上下文</h2><h3 id="在执行全局代码前将window确定为全局执行上下文"><a href="#在执行全局代码前将window确定为全局执行上下文" class="headerlink" title="在执行全局代码前将window确定为全局执行上下文"></a>在执行全局代码前将window确定为全局执行上下文</h3><h3 id="对全局数据进行预处理"><a href="#对全局数据进行预处理" class="headerlink" title="对全局数据进行预处理"></a>对全局数据进行预处理</h3><p>var定义的全局变量==&gt;undefined,添加为window的属性<br>function声明的全局函数==&gt;赋值（fun）,添加为window的方法<br>this==&gt;赋值（window）</p>
+<h3 id="开始执行全局代码"><a href="#开始执行全局代码" class="headerlink" title="开始执行全局代码"></a>开始执行全局代码</h3><h2 id="函数执行上下文"><a href="#函数执行上下文" class="headerlink" title="函数执行上下文"></a>函数执行上下文</h2><h3 id="在调用函数，准备执行函数体之前，创建对应的函数执行上下文"><a href="#在调用函数，准备执行函数体之前，创建对应的函数执行上下文" class="headerlink" title="在调用函数，准备执行函数体之前，创建对应的函数执行上下文"></a>在调用函数，准备执行函数体之前，创建对应的函数执行上下文</h3><h3 id="对局部数据进行预处理"><a href="#对局部数据进行预处理" class="headerlink" title="对局部数据进行预处理"></a>对局部数据进行预处理</h3><p>形参变量==&gt;赋值（实参）==&gt;添加为执行上下文的属性<br>arguments==&gt;赋值（实参列表）==&gt;添加为执行上下文的属性<br>var定义的局部变量==&gt;undefined,添加为执行上下文的属性<br>function声明的函数==&gt;赋值（fun）==&gt;添加为执行上下文的方法<br>this==&gt;赋值（调用函数的对象）</p>
+<h3 id="开始执行函数体代码"><a href="#开始执行函数体代码" class="headerlink" title="开始执行函数体代码"></a>开始执行函数体代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;函数执行上下文    注意：是在调用函数时创建的</span><br><span class="line">function fn(a1)&#123;</span><br><span class="line">        console.log(a1) &#x2F;&#x2F; 2</span><br><span class="line">        console.log(a2) &#x2F;&#x2F; undefined</span><br><span class="line">        a3()    &#x2F;&#x2F;a3()</span><br><span class="line">        console.log(this)   &#x2F;&#x2F;window</span><br><span class="line">        console.log(arguments)  &#x2F;&#x2F;伪数组(2,3)</span><br><span class="line"></span><br><span class="line">        var a2&#x3D;3</span><br><span class="line">        function a3()&#123;</span><br><span class="line">            console.log(&#39;a3()&#39;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    fn(2,3)</span><br></pre></td></tr></table></figure>
+<h2 id="执行上下文栈"><a href="#执行上下文栈" class="headerlink" title="执行上下文栈"></a>执行上下文栈</h2><p>在全局代码执行前，js引擎就会创建一个栈来存储管理所有的执行上下文对象<br>在全局执行上下文（window）创建后，将其添加到栈中（压栈）<br>在函数执行上下文创建后，将其添加到栈中（压栈）<br>在当前函数执行完后，将栈顶的对象移除（出栈）<br>当所有的代码执行完后，栈中只剩下window</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a&#x3D;10</span><br><span class="line">    var bar&#x3D;function(x)&#123;</span><br><span class="line">        var b&#x3D;5</span><br><span class="line">        foo(x+b)</span><br><span class="line">    &#125;</span><br><span class="line">    var foo&#x3D;function(y)&#123;</span><br><span class="line">        var c&#x3D;5</span><br><span class="line">        console.log(a+c+y)</span><br><span class="line">    &#125;</span><br><span class="line">    bar(10)   &#x2F;&#x2F;此代码创建了3个执行上下文（在调用函数时创建）</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">console.log(&#39;global begin: &#39;+i)     &#x2F;&#x2F;undefined</span><br><span class="line">    var i&#x3D;1                         &#x2F;&#x2F;输出顺序：fb 1</span><br><span class="line">    foo(1)                          &#x2F;&#x2F;fb 2</span><br><span class="line">    function foo(i)&#123;                &#x2F;&#x2F;fb 3</span><br><span class="line">        if(i&#x3D;&#x3D;4)                    &#x2F;&#x2F;fe 3</span><br><span class="line">        &#123;                           &#x2F;&#x2F;fe 2</span><br><span class="line">            return                  &#x2F;&#x2F;fe 1</span><br><span class="line">        &#125;                           &#x2F;&#x2F;ge 1  </span><br><span class="line">        console.log(&#39;foo() begin: &#39;+i)</span><br><span class="line">        foo(i+1)</span><br><span class="line">        console.log(&#39;foo() end: &#39;+i)</span><br><span class="line">    &#125;</span><br><span class="line">    console.log(&#39;global end: &#39;+i)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>js高级</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>博客文章的相关操作</title>
-    <url>/2020/03/19/jsAdvanced/</url>
+    <url>/2020/03/19/The%20basic%20operation%20of%20hexo/</url>
     <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="这个是三级标题"><a href="#这个是三级标题" class="headerlink" title="这个是三级标题"></a>这个是三级标题</h3><a id="more"></a>
 <ul>
 <li>列表1</li>
@@ -30,9 +48,21 @@
       </tags>
   </entry>
   <entry>
-    <title>我的第一篇博客文章</title>
-    <url>/2020/03/19/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/</url>
-    <content><![CDATA[<a id="more"></a>]]></content>
+    <title>声明提升</title>
+    <url>/2020/03/19/%E5%A3%B0%E6%98%8E%E6%8F%90%E5%8D%87/</url>
+    <content><![CDATA[<h2 id="变量提升"><a href="#变量提升" class="headerlink" title="变量提升"></a>变量提升</h2><p>通过var定义（声明）的变量，在定义语句之前就能访问到，<br>此时该变量的值：undefined</p>
+<h2 id="函数声明提升"><a href="#函数声明提升" class="headerlink" title="函数声明提升"></a>函数声明提升</h2><p>通过function声明的函数，在之前就可以直接调用<br>此时该函数的值：函数定义（对象）</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a&#x3D;3</span><br><span class="line">function fn()&#123;</span><br><span class="line">    console.log(a)</span><br><span class="line">    var a&#x3D;4</span><br><span class="line">&#125;</span><br><span class="line">fn()   &#x2F;&#x2F;输出 undefined</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">console.log(b) &#x2F;&#x2F;undefined  变量提升</span><br><span class="line">fn2() &#x2F;&#x2F;可调用  函数提升</span><br><span class="line">var b&#x3D;3</span><br><span class="line">function fn2()&#123;</span><br><span class="line">    console.log(&#39;fn2()&#39;)</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">fn3()   &#x2F;&#x2F;不能调用，应为这是通过var声明的变量</span><br><span class="line">    var fn3&#x3D;function ()&#123;</span><br><span class="line">        console.log(&#39;fn3()&#39;)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;先执行变量提升，再执行函数提升</span><br><span class="line">    function a()&#123;&#125;</span><br><span class="line">    var a</span><br><span class="line">    console.log(typeof a) &#x2F;&#x2F; function</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if(!(b in window))&#123;</span><br><span class="line">        var b &#x3D;1    &#x2F;&#x2F; 该变量是全局变量</span><br><span class="line">    &#125;</span><br><span class="line">    console.log(b)  &#x2F;&#x2F; undefined</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var c&#x3D;1</span><br><span class="line">    function c(c)&#123;</span><br><span class="line">        console.log(c)</span><br><span class="line">    &#125;</span><br><span class="line">    c(2)    &#x2F;&#x2F;报错</span><br><span class="line">    &#x2F;&#x2F;相当与</span><br><span class="line">    var c</span><br><span class="line">    function c(c)&#123;</span><br><span class="line">        console.log(c)</span><br><span class="line">    &#125;</span><br><span class="line">    c&#x3D;1</span><br><span class="line">    c(2)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>js高级</tag>
+      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
